@@ -4,6 +4,7 @@ project(Limit VERSION 0.1.0 LANGUAGES C CXX)
 
 option(LIMIT_BUILD_TESTS "Build Limit tests" ON)
 option(LIMIT_REPRODUCIBLE "Enable reproducible build flags" ON)
+option(LIMIT_SANITIZE "Enable Address/Undefined sanitizers (Debug only)" OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -13,6 +14,18 @@ if(LIMIT_REPRODUCIBLE)
       -ffile-prefix-map=${CMAKE_SOURCE_DIR}=.
       -fdebug-prefix-map=${CMAKE_SOURCE_DIR}=.
     )
+  endif()
+endif()
+
+if(LIMIT_SANITIZE)
+  if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(FATAL_ERROR "LIMIT_SANITIZE requires Debug build type.")
+  endif()
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+    add_link_options(-fsanitize=address,undefined)
+  else()
+    message(FATAL_ERROR "LIMIT_SANITIZE is only supported on GCC/Clang.")
   endif()
 endif()
 

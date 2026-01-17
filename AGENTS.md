@@ -24,6 +24,7 @@ Build system is CMake + Ninja. Canonical commands:
 - `./scripts/format.sh` (apply clang-format)
 - `./scripts/lint.sh` (clang-tidy, CppCoreGuidelines enforced)
 - `./scripts/lint-md.sh` (markdown lint via mdl)
+- `./scripts/sanitize.sh` (ASan/UBSan build)
 
 Note: This repo does not permit running `sudo` commands. If elevated installs
 are required, provide the exact commands for the user to run manually.

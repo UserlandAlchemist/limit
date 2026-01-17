@@ -54,6 +54,12 @@ Formatting and linting:
 ./scripts/lint-md.sh
 ```
 
+Sanitizer build (ASan/UBSan):
+
+```sh
+./scripts/sanitize.sh
+```
+
 ## CI
 
 CI runs on GitHub Actions (Ubuntu). It performs configure, build, tests, and lint:
