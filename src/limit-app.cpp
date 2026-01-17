@@ -21,9 +21,9 @@ public:
 
   ~MainComponent() override { shutdownAudio(); }
   MainComponent(const MainComponent &) = delete;
-  MainComponent &operator=(const MainComponent &) = delete;
+  auto operator=(const MainComponent &) -> MainComponent & = delete;
   MainComponent(MainComponent &&) = delete;
-  MainComponent &operator=(MainComponent &&) = delete;
+  auto operator=(MainComponent &&) -> MainComponent & = delete;
 
   void prepareToPlay(int /*samples_per_block_expected*/, double /*sample_rate*/) override {
     last_midi_message = "";
@@ -49,7 +49,7 @@ public:
   void resized() override {}
   void parentHierarchyChanged() override { focusIfVisible(); }
   void visibilityChanged() override { focusIfVisible(); }
-  bool keyPressed(const juce::KeyPress &key) override {
+  auto keyPressed(const juce::KeyPress &key) -> bool override {
     const auto note = limit::mapKeyToMidiNote(static_cast<int>(key.getTextCharacter()));
     if (note >= 0) {
       last_midi_message = "note-on " + juce::MidiMessage::getMidiNoteName(note, true, true, 3);
@@ -96,9 +96,9 @@ private:
 
 class LimitApplication final : public juce::JUCEApplication {
 public:
-  const juce::String getApplicationName() override { return "Limit"; }
-  const juce::String getApplicationVersion() override { return ProjectInfo::versionString; }
-  bool moreThanOneInstanceAllowed() override { return true; }
+  auto getApplicationName() -> const juce::String override { return "Limit"; }
+  auto getApplicationVersion() -> const juce::String override { return ProjectInfo::versionString; }
+  auto moreThanOneInstanceAllowed() -> bool override { return true; }
 
   void initialise(const juce::String & /*command_line*/) override {
     main_window = std::make_unique<MainWindow>(getApplicationName());
@@ -135,4 +135,6 @@ private:
 };
 } // namespace
 
-START_JUCE_APPLICATION(LimitApplication) // NOLINT(cppcoreguidelines-owning-memory)
+// NOLINTBEGIN(cppcoreguidelines-owning-memory,modernize-use-trailing-return-type)
+START_JUCE_APPLICATION(LimitApplication)
+// NOLINTEND(cppcoreguidelines-owning-memory,modernize-use-trailing-return-type)
