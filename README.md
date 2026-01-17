@@ -60,6 +60,12 @@ Sanitizer build (ASan/UBSan):
 ./scripts/sanitize.sh
 ```
 
+Valgrind (memcheck on tests):
+
+```sh
+./scripts/valgrind.sh
+```
+
 ## CI
 
 CI runs on GitHub Actions (Ubuntu). It performs configure, build, tests, and lint:
