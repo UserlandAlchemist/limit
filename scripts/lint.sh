@@ -6,4 +6,7 @@ if [[ ! -f build/compile_commands.json ]]; then
   exit 1
 fi
 
-rg --files -g '*.cpp' -g '*.hpp' src tests | xargs -r clang-tidy -p build
+root_dir="$(pwd)"
+header_filter="^${root_dir}/(src|tests)/"
+
+rg --files -g '*.cpp' -g '*.hpp' src tests | xargs -r clang-tidy -p build -header-filter="$header_filter"
