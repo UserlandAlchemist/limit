@@ -25,11 +25,6 @@ Limit explicitly avoids:
 
 When the constraints are reached, the work is considered finished or handed off elsewhere.
 
-## Development Status
-
-Early-stage: initial app scaffold only. Build and source layout are defined,
-tests are not yet in place.
-
 ## Build & Run (Local)
 
 JUCE must be available at `third_party/JUCE` (submodule recommended).
