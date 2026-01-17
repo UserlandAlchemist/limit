@@ -100,13 +100,6 @@ Local tooling needed for linting:
 - `clang-format`, `clang-tidy`
 - `mdl` (ruby gem)
 
-## Principles
-
-- Constraint drives completion
-- Instrument-first interaction over software complexity
-- Inspectable DSP over opaque plugin stacks
-- Offline, local, and predictable behavior
-
 ## OP-1 Field Influence (from the user guide)
 
 Limit borrows the OP-1 Field’s instrument-first workflow and its deliberate bounds:
