@@ -25,6 +25,7 @@ Build system is CMake + Ninja. Canonical commands:
 - `./scripts/lint.sh` (clang-tidy, CppCoreGuidelines enforced)
 - `./scripts/lint-md.sh` (markdown lint via mdl)
 - `./scripts/sanitize.sh` (ASan/UBSan build)
+- `./scripts/run-sanitize.sh` (run sanitized app)
 - `./scripts/valgrind.sh` (run tests under Valgrind memcheck)
 
 Note: This repo does not permit running `sudo` commands. If elevated installs

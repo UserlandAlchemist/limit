@@ -60,6 +60,12 @@ Sanitizer build (ASan/UBSan):
 ./scripts/sanitize.sh
 ```
 
+Run sanitized app:
+
+```sh
+./scripts/run-sanitize.sh
+```
+
 Valgrind (memcheck on tests):
 
 ```sh
