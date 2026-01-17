@@ -42,6 +42,8 @@ Style and linting:
 - File naming: kebab-case (e.g., `audio-engine.cpp`, `midi-router.hpp`)
 - Formatting: `clang-format` with repo config
 - Linting: `clang-tidy` with CppCoreGuidelines as errors
+- Prefer the C++ standard library for core data structures and algorithms where
+  it fits, before introducing custom utilities.
 
 ## Testing Guidelines
 
