@@ -1,13 +1,17 @@
 # Limit
 
-Limit is a deliberately constrained, runs-on-the-box software music instrument. It is not a general-purpose DAW; it is a focused environment for capturing, committing, and completing musical ideas within a fixed and finite structure. Constraint is the feature.
+Limit is a deliberately constrained, runs-on-the-box software music instrument.
+It is not a general-purpose DAW; it is a focused environment for capturing,
+committing, and completing musical ideas within a fixed and finite structure.
+Constraint is the feature.
 
 ## What It Is
 
 - A JUCE-based standalone app with a minimal, controller-first UI
 - A linear, bounded musical timeline (no non-linear arranging or micro-editing)
 - A small, fixed set of internal instruments/effects authored in Faust
-- Designed around MIDI control (nanoKEY2 + MPD218) and a future Manifold keyboard surface
+- Designed around MIDI control (nanoKEY2 + MPD218) and a future Manifold keyboard
+  surface
 
 ## What It Is Not
 
@@ -23,7 +27,8 @@ When the constraints are reached, the work is considered finished or handed off 
 
 ## Development Status
 
-Early-stage: initial app scaffold only. Build and source layout are defined, tests are not yet in place.
+Early-stage: initial app scaffold only. Build and source layout are defined,
+tests are not yet in place.
 
 ## Build & Run (Local)
 
@@ -41,6 +46,14 @@ Run tests (Catch2):
 ctest --test-dir build
 ```
 
+Formatting and linting:
+
+```sh
+./scripts/format.sh
+./scripts/lint.sh
+./scripts/lint-md.sh
+```
+
 ## Principles
 
 - Constraint drives completion
@@ -52,7 +65,8 @@ ctest --test-dir build
 
 Limit borrows the OP-1 Field’s instrument-first workflow and its deliberate bounds:
 
-- A tape-style recording model with fixed length and finite storage (bounded, linear time)
+- A tape-style recording model with fixed length and finite storage (bounded, linear
+  time)
 - A small, fixed device set: synth, drum, sampler, effects; no plugin sprawl
 - Mode-driven interaction (synth, drum, tape, mixer) rather than a DAW timeline
 - Tape “tricks” and simple edits over deep, mouse-centric micro-editing

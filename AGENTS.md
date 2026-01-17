@@ -2,14 +2,16 @@
 
 ## Project Structure & Module Organization
 
-This repository is currently minimal and only contains initial scaffolding. As the project grows, prefer a clear top-level layout such as:
+This repository is currently minimal and only contains initial scaffolding.
+As the project grows, prefer a clear top-level layout such as:
 
 - `src/` for JUCE app code and DSP integration
 - `tests/` for unit or integration tests
 - `assets/` for bundled presets, UI resources, or documentation artifacts
 - `third_party/JUCE/` for the JUCE source (submodule recommended)
 
-If you introduce new top-level directories, document them in `README.md` and keep names short and descriptive.
+If you introduce new top-level directories, document them in `README.md` and
+keep names short and descriptive.
 
 ## Build, Test, and Development Commands
 
@@ -19,16 +21,21 @@ Build system is CMake + Ninja. Canonical commands:
 - `./scripts/build.sh` (build)
 - `./scripts/run.sh` (launch app)
 - `ctest --test-dir build` (run tests)
+- `./scripts/format.sh` (apply clang-format)
+- `./scripts/lint.sh` (clang-tidy, CppCoreGuidelines enforced)
+- `./scripts/lint-md.sh` (markdown lint via mdl)
 
-Note: This repo does not permit running `sudo` commands. If elevated installs are required, provide the exact commands for the user to run manually.
+Note: This repo does not permit running `sudo` commands. If elevated installs
+are required, provide the exact commands for the user to run manually.
 
 ## Coding Style & Naming Conventions
 
-No style guide is established. If you add C++ code, document the following in this section and enforce it with tooling where possible:
+Style and linting:
 
-- Indentation (e.g., 2 or 4 spaces)
-- File naming (use kebab-case for filenames, e.g., `audio-engine.cpp`, `midi-router.hpp`)
-- Formatting tools (e.g., `clang-format` with a checked-in `.clang-format`)
+- Indentation: 2 spaces (see `.clang-format`)
+- File naming: kebab-case (e.g., `audio-engine.cpp`, `midi-router.hpp`)
+- Formatting: `clang-format` with repo config
+- Linting: `clang-tidy` with CppCoreGuidelines as errors
 
 ## Testing Guidelines
 
@@ -54,4 +61,10 @@ For pull requests, include:
 
 ## Configuration & Safety Notes
 
-Limit is intentionally constrained and offline-first. Avoid adding background services, cloud dependencies, or plugin hosting infrastructure without explicit project agreement.
+Limit is intentionally constrained and offline-first. Avoid adding background services,
+cloud dependencies, or plugin hosting infrastructure without explicit project agreement.
+
+## CppCoreGuidelines
+
+All code must follow the CppCoreGuidelines. Run `./scripts/lint.sh` before committing
+changes.

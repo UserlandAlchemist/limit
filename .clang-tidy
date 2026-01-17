@@ -1,0 +1,9 @@
+Checks: >
+  -*,
+  cppcoreguidelines-*,
+  bugprone-*,
+  performance-*,
+  modernize-*
+WarningsAsErrors: 'cppcoreguidelines-*'
+HeaderFilterRegex: 'src/|tests/'
+FormatStyle: file
