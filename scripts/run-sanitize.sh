@@ -12,19 +12,21 @@ elif command -v llvm-symbolizer-17 >/dev/null 2>&1; then
   symbolizer_path="$(command -v llvm-symbolizer-17)"
 fi
 
+asan_options="detect_leaks=1"
 if [[ -n "${symbolizer_path}" ]]; then
   export ASAN_SYMBOLIZER_PATH="${symbolizer_path}"
   export LLVM_SYMBOLIZER_PATH="${symbolizer_path}"
-  export ASAN_OPTIONS="detect_leaks=1:symbolize=1"
+  asan_options+=":symbolize=1:external_symbolizer_path=${symbolizer_path}"
 else
   echo "llvm-symbolizer not found; sanitizer backtraces will be unsymbolized." >&2
-  export ASAN_OPTIONS="detect_leaks=1:symbolize=0"
+  asan_options+=":symbolize=0"
 fi
 
 if [[ "${LIMIT_ASAN_VERBOSE:-}" == "1" ]]; then
-  export ASAN_OPTIONS="${ASAN_OPTIONS}:verbosity=1"
+  asan_options+=":verbosity=1"
 fi
 
-export LSAN_OPTIONS="suppressions=$(pwd)/lsan.supp"
+export ASAN_OPTIONS="${asan_options}"
+export LSAN_OPTIONS="suppressions=$(pwd)/lsan.supp:fast_unwind_on_malloc=0:fast_unwind_on_free=0"
 
 ./build-sanitize/Limit_artefacts/Debug/Limit

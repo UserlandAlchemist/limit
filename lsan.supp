@@ -1,3 +1,2 @@
-# LSan suppressions. Fill with known system library leaks once captured.
-# Example format:
-# leak:libgtk-3.so
+# LSan suppressions. Keep these focused on system/library leaks.
+leak:snd_pcm_open
