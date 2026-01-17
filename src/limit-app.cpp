@@ -33,10 +33,10 @@ public:
   void paint(juce::Graphics& g) override {
     g.fillAll(juce::Colours::black);
     g.setColour(juce::Colours::white);
-    g.setFont(juce::Font(24.0f, juce::Font::bold));
+    g.setFont(juce::Font(juce::FontOptions{}.withHeight(24.0f).withStyle("bold")));
     g.drawText("Limit", getLocalBounds().removeFromTop(60), juce::Justification::centred);
 
-    g.setFont(juce::Font(14.0f));
+    g.setFont(juce::Font(juce::FontOptions{}.withHeight(14.0f)));
     const auto text = last_midi_message.isEmpty() ? "MIDI: none" : "MIDI: " + last_midi_message;
     g.drawText(text, getLocalBounds().reduced(24), juce::Justification::bottomLeft);
   }
