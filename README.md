@@ -66,6 +66,9 @@ Run sanitized app:
 ./scripts/run-sanitize.sh
 ```
 
+Leak sanitizer suppressions live in `lsan.supp` (add entries only for known
+system-library leaks).
+
 Valgrind (memcheck on tests):
 
 ```sh
