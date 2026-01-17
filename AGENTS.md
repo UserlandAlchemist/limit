@@ -19,6 +19,8 @@ Build system is CMake + Ninja. Canonical commands:
 - `./scripts/build.sh` (build)
 - `./scripts/run.sh` (launch app)
 
+Note: This repo does not permit running `sudo` commands. If elevated installs are required, provide the exact commands for the user to run manually.
+
 ## Coding Style & Naming Conventions
 
 No style guide is established. If you add C++ code, document the following in this section and enforce it with tooling where possible:
