@@ -35,6 +35,12 @@ JUCE must be available at `third_party/JUCE` (submodule recommended).
 ./scripts/run.sh
 ```
 
+Run tests (Catch2):
+
+```sh
+ctest --test-dir build
+```
+
 ## Principles
 
 - Constraint drives completion

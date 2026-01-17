@@ -18,6 +18,7 @@ Build system is CMake + Ninja. Canonical commands:
 - `./scripts/configure.sh` (configure via CMake + Ninja)
 - `./scripts/build.sh` (build)
 - `./scripts/run.sh` (launch app)
+- `ctest --test-dir build` (run tests)
 
 Note: This repo does not permit running `sudo` commands. If elevated installs are required, provide the exact commands for the user to run manually.
 
@@ -31,9 +32,9 @@ No style guide is established. If you add C++ code, document the following in th
 
 ## Testing Guidelines
 
-No testing framework is configured. When tests are introduced, specify:
+Testing uses Catch2 (C++). Guidelines:
 
-- Framework (e.g., Catch2, GoogleTest)
+- Framework: Catch2 (via CMake FetchContent)
 - Test file location and naming (e.g., `tests/TestAudioGraph.cpp`)
 - How to run tests locally (command and expected output)
 
