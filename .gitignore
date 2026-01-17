@@ -15,3 +15,4 @@
 **/*.dylib
 **/*.so
 **/*.app
+docs/references/op-1-field-user-guide.pdf

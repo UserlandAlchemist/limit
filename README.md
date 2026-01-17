@@ -109,7 +109,8 @@ Limit borrows the OP-1 Field’s instrument-first workflow and its deliberate bo
 
 ## References
 
-- OP-1 Field User Guide (PDF): download from Teenage Engineering.
+- OP-1 Field User Guide (PDF): download from Teenage Engineering. Keep a local copy at
+  `docs/references/op-1-field-user-guide.pdf` (gitignored) and remove it before pushing changes.
 
 ## License
 
