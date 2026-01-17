@@ -54,6 +54,19 @@ Formatting and linting:
 ./scripts/lint-md.sh
 ```
 
+## CI
+
+CI runs on GitHub Actions (Ubuntu). It performs configure, build, tests, and lint:
+
+- Build: `./scripts/configure.sh`, `./scripts/build.sh`
+- Tests: `ctest --test-dir build`
+- Lint: `./scripts/lint.sh`, `./scripts/lint-md.sh`
+
+Local tooling needed for linting:
+
+- `clang-format`, `clang-tidy`
+- `mdl` (ruby gem)
+
 ## Principles
 
 - Constraint drives completion
