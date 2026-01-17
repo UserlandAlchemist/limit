@@ -74,3 +74,16 @@ cloud dependencies, or plugin hosting infrastructure without explicit project ag
 
 All code must follow the CppCoreGuidelines. Run `./scripts/lint.sh` before committing
 changes.
+
+## Change Validation
+
+When modifying C++:
+
+- Run `./scripts/format.sh` and `./scripts/lint.sh`.
+- Run `./scripts/build.sh` and `ctest --test-dir build`.
+- If changes could introduce leaks (allocation, ownership, lifetime, containers,
+  new/delete), run `./scripts/valgrind.sh` before committing.
+
+When modifying Markdown:
+
+- Run `./scripts/lint-md.sh`.
