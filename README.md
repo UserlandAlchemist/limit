@@ -119,11 +119,6 @@ Limit borrows the OP-1 Field’s instrument-first workflow and its deliberate bo
 - Master effects apply to the mix/output rather than being printed to tape
 - Automatic, always-on persistence rather than explicit save management
 
-## Repository Notes
-
-- Contributor guidelines live in `AGENTS.md`
-- Please follow Conventional Commits and kebab-case filenames
-
 ## References
 
 - OP-1 Field User Guide (PDF): `docs/references/op-1-field-user-guide.pdf`
