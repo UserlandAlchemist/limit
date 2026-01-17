@@ -6,6 +6,7 @@ class MainComponent final : public juce::AudioAppComponent,
 public:
   MainComponent() {
     setSize(720, 420);
+    setWantsKeyboardFocus(true);
 
     auto* device_manager = &deviceManager;
     const auto midi_inputs = juce::MidiInput::getAvailableDevices();
@@ -41,8 +42,45 @@ public:
   }
 
   void resized() override {}
+  void parentHierarchyChanged() override { focusIfVisible(); }
+  void visibilityChanged() override { focusIfVisible(); }
+  bool keyPressed(const juce::KeyPress& key) override {
+    const auto note = mapKeyToMidiNote(key);
+    if (note >= 0) {
+      last_midi_message = "note-on " + juce::MidiMessage::getMidiNoteName(note, true, true, 3);
+      repaint();
+      return true;
+    }
+    return false;
+  }
 
 private:
+  int mapKeyToMidiNote(const juce::KeyPress& key) const {
+    const auto base_note = 60;
+    switch (key.getTextCharacter()) {
+      case 'a': return base_note + 0;
+      case 'w': return base_note + 1;
+      case 's': return base_note + 2;
+      case 'e': return base_note + 3;
+      case 'd': return base_note + 4;
+      case 'f': return base_note + 5;
+      case 't': return base_note + 6;
+      case 'g': return base_note + 7;
+      case 'y': return base_note + 8;
+      case 'h': return base_note + 9;
+      case 'u': return base_note + 10;
+      case 'j': return base_note + 11;
+      case 'k': return base_note + 12;
+      default: return -1;
+    }
+  }
+
+  void focusIfVisible() {
+    if (isShowing()) {
+      grabKeyboardFocus();
+    }
+  }
+
   void handleIncomingMidiMessage(juce::MidiInput* /*source*/, const juce::MidiMessage& message) override {
     if (message.isNoteOn()) {
       last_midi_message = "note-on " + juce::MidiMessage::getMidiNoteName(message.getNoteNumber(), true, true, 3);
