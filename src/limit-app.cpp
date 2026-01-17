@@ -1,5 +1,7 @@
 #include <JuceHeader.h>
 
+#include "keymap.h"
+
 namespace {
 class MainComponent final : public juce::AudioAppComponent, private juce::MidiInputCallback {
 public:
@@ -48,7 +50,7 @@ public:
   void parentHierarchyChanged() override { focusIfVisible(); }
   void visibilityChanged() override { focusIfVisible(); }
   bool keyPressed(const juce::KeyPress &key) override {
-    const auto note = mapKeyToMidiNote(key);
+    const auto note = limit::mapKeyToMidiNote(static_cast<int>(key.getTextCharacter()));
     if (note >= 0) {
       last_midi_message = "note-on " + juce::MidiMessage::getMidiNoteName(note, true, true, 3);
       repaint();
@@ -64,20 +66,6 @@ private:
   static constexpr float kBodyFontSize = 14.0f;
   static constexpr int kTitleHeight = 60;
   static constexpr int kPadding = 24;
-  static constexpr int kBaseNote = 60;
-  static constexpr std::array<char, 13> kKeyMap = {'a', 'w', 's', 'e', 'd', 'f', 't',
-                                                   'g', 'y', 'h', 'u', 'j', 'k'};
-
-  int mapKeyToMidiNote(const juce::KeyPress &key) const {
-    int index = 0;
-    for (const auto mapped_key : kKeyMap) {
-      if (key.getTextCharacter() == mapped_key) {
-        return kBaseNote + index;
-      }
-      ++index;
-    }
-    return -1;
-  }
 
   void focusIfVisible() {
     if (isShowing()) {

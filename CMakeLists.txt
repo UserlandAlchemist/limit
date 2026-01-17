@@ -52,6 +52,7 @@ juce_generate_juce_header(Limit)
 target_sources(Limit
   PRIVATE
     src/limit-app.cpp
+    src/keymap.cpp
 )
 
 target_compile_definitions(Limit
@@ -71,6 +72,8 @@ target_link_libraries(Limit
     juce::juce_recommended_warning_flags
 )
 
+target_include_directories(Limit PRIVATE src)
+
 if(LIMIT_BUILD_TESTS)
   include(FetchContent)
   FetchContent_Declare(
@@ -84,7 +87,9 @@ if(LIMIT_BUILD_TESTS)
 
   add_executable(limit-tests
     tests/smoke-test.cpp
+    src/keymap.cpp
   )
+  target_include_directories(limit-tests PRIVATE src)
   target_link_libraries(limit-tests PRIVATE Catch2::Catch2WithMain)
 
   add_test(NAME limit-smoke COMMAND limit-tests)
