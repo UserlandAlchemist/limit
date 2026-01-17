@@ -3,8 +3,18 @@ cmake_minimum_required(VERSION 3.22)
 project(Limit VERSION 0.1.0 LANGUAGES C CXX)
 
 option(LIMIT_BUILD_TESTS "Build Limit tests" ON)
+option(LIMIT_REPRODUCIBLE "Enable reproducible build flags" ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+if(LIMIT_REPRODUCIBLE)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(
+      -ffile-prefix-map=${CMAKE_SOURCE_DIR}=.
+      -fdebug-prefix-map=${CMAKE_SOURCE_DIR}=.
+    )
+  endif()
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

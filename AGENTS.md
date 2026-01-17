@@ -28,6 +28,9 @@ Build system is CMake + Ninja. Canonical commands:
 Note: This repo does not permit running `sudo` commands. If elevated installs
 are required, provide the exact commands for the user to run manually.
 
+Reproducible builds are enabled by default via compiler prefix-map flags. Keep
+paths stable and avoid embedding timestamps in generated assets.
+
 ## Coding Style & Naming Conventions
 
 Style and linting:
