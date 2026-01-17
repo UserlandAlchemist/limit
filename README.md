@@ -1,0 +1,53 @@
+# Limit
+
+Limit is a deliberately constrained, runs-on-the-box software music instrument. It is not a general-purpose DAW; it is a focused environment for capturing, committing, and completing musical ideas within a fixed and finite structure. Constraint is the feature.
+
+## What It Is
+
+- A JUCE-based standalone app with a minimal, controller-first UI
+- A linear, bounded musical timeline (no non-linear arranging or micro-editing)
+- A small, fixed set of internal instruments/effects authored in Faust
+- Designed around MIDI control (nanoKEY2 + MPD218) and a future Manifold keyboard surface
+
+## What It Is Not
+
+Limit explicitly avoids:
+
+- DAW-style editing, comping, or unlimited undo
+- Unlimited tracks, devices, routing graphs, or plugin GUIs
+- Mouse-centric precision workflows
+- Cloud services, background daemons, or online dependencies
+- AI composition or generative features
+
+When the constraints are reached, the work is considered finished or handed off elsewhere.
+
+## Development Status
+
+Early-stage: repository scaffolding only. Build, test, and source layout are still to be defined.
+
+## Principles
+
+- Constraint drives completion
+- Instrument-first interaction over software complexity
+- Inspectable DSP over opaque plugin stacks
+- Offline, local, and predictable behavior
+
+## OP-1 Field Influence (from the user guide)
+
+Limit borrows the OP-1 Field’s instrument-first workflow and its deliberate bounds:
+
+- A tape-style recording model with fixed length and finite storage (bounded, linear time)
+- A small, fixed device set: synth, drum, sampler, effects; no plugin sprawl
+- Mode-driven interaction (synth, drum, tape, mixer) rather than a DAW timeline
+- Tape “tricks” and simple edits over deep, mouse-centric micro-editing
+- Master effects apply to the mix/output rather than being printed to tape
+- Automatic, always-on persistence rather than explicit save management
+
+## Repository Notes
+
+- Contributor guidelines live in `AGENTS.md`
+- Please follow Conventional Commits and kebab-case filenames
+
+## References
+
+- OP-1 Field User Guide (PDF): `docs/references/op-1-field-user-guide.pdf`
