@@ -52,6 +52,8 @@ Formatting and linting:
 ./scripts/format.sh
 ./scripts/lint.sh
 ./scripts/lint-md.sh
+./scripts/format-sh.sh
+./scripts/lint-sh.sh
 ```
 
 Sanitizer build (ASan/UBSan):

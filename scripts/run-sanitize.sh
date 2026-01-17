@@ -27,6 +27,8 @@ if [[ "${LIMIT_ASAN_VERBOSE:-}" == "1" ]]; then
 fi
 
 export ASAN_OPTIONS="${asan_options}"
-export LSAN_OPTIONS="suppressions=$(pwd)/lsan.supp:fast_unwind_on_malloc=0:fast_unwind_on_free=0"
+
+lsan_supp_path="$(pwd)/lsan.supp"
+export LSAN_OPTIONS="suppressions=${lsan_supp_path}:fast_unwind_on_malloc=0:fast_unwind_on_free=0"
 
 ./build-sanitize/Limit_artefacts/Debug/Limit

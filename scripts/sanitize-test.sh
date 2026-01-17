@@ -5,6 +5,8 @@ cmake -S . -B build-sanitize -G Ninja -DCMAKE_BUILD_TYPE=Debug -DLIMIT_SANITIZE=
 cmake --build build-sanitize
 
 export ASAN_OPTIONS="detect_leaks=1:symbolize=1"
-export LSAN_OPTIONS="suppressions=$(pwd)/lsan.supp"
+
+lsan_supp_path="$(pwd)/lsan.supp"
+export LSAN_OPTIONS="suppressions=${lsan_supp_path}"
 
 ./build-sanitize/limit-tests

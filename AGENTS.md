@@ -24,6 +24,8 @@ Build system is CMake + Ninja. Canonical commands:
 - `./scripts/format.sh` (apply clang-format)
 - `./scripts/lint.sh` (clang-tidy, CppCoreGuidelines enforced)
 - `./scripts/lint-md.sh` (markdown lint via mdl)
+- `./scripts/format-sh.sh` (format shell scripts via shfmt)
+- `./scripts/lint-sh.sh` (lint shell scripts via shellcheck)
 - `./scripts/sanitize.sh` (ASan/UBSan build)
 - `./scripts/run-sanitize.sh` (run sanitized app)
 - `./scripts/sanitize-test.sh` (run tests with ASan/UBSan)
