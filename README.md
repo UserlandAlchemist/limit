@@ -66,6 +66,12 @@ Run sanitized app:
 ./scripts/run-sanitize.sh
 ```
 
+Run sanitized tests:
+
+```sh
+./scripts/sanitize-test.sh
+```
+
 Leak sanitizer suppressions live in `lsan.supp` (add entries only for known
 system-library leaks).
 Current suppressions include ALSA (`snd_pcm_open`) from JUCE device init.

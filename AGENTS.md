@@ -26,6 +26,7 @@ Build system is CMake + Ninja. Canonical commands:
 - `./scripts/lint-md.sh` (markdown lint via mdl)
 - `./scripts/sanitize.sh` (ASan/UBSan build)
 - `./scripts/run-sanitize.sh` (run sanitized app)
+- `./scripts/sanitize-test.sh` (run tests with ASan/UBSan)
 - `./scripts/valgrind.sh` (run tests under Valgrind memcheck)
 
 Note: This repo does not permit running `sudo` commands. If elevated installs
@@ -76,6 +77,8 @@ cloud dependencies, or plugin hosting infrastructure without explicit project ag
 
 All code must follow the CppCoreGuidelines. Run `./scripts/lint.sh` before committing
 changes.
+
+GUI sanitizer runs may require leak suppressions for system libraries (see `lsan.supp`).
 
 ## Change Validation
 

@@ -9,4 +9,4 @@ fi
 root_dir="$(pwd)"
 header_filter="^${root_dir}/(src|tests)/"
 
-rg --files -g '*.cpp' -g '*.hpp' src tests | xargs -r clang-tidy -p build -header-filter="$header_filter"
+rg --files -g '*.cpp' -g '*.hpp' src tests | xargs -r clang-tidy -p build -header-filter="$header_filter" --system-headers=0

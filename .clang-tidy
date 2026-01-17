@@ -5,5 +5,5 @@ Checks: >
   performance-*,
   modernize-*
 WarningsAsErrors: 'cppcoreguidelines-*'
-HeaderFilterRegex: 'src/|tests/'
+HeaderFilterRegex: '^(src|tests)/'
 FormatStyle: file
