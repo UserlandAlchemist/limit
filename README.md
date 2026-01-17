@@ -69,6 +69,9 @@ Run sanitized app:
 Leak sanitizer suppressions live in `lsan.supp` (add entries only for known
 system-library leaks).
 
+For symbolized sanitizer backtraces, install `llvm-symbolizer` (package `llvm`
+or `llvm-17/18`) so `run-sanitize.sh` can resolve stack frames.
+
 Valgrind (memcheck on tests):
 
 ```sh
