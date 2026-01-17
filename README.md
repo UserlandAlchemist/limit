@@ -23,7 +23,17 @@ When the constraints are reached, the work is considered finished or handed off 
 
 ## Development Status
 
-Early-stage: repository scaffolding only. Build, test, and source layout are still to be defined.
+Early-stage: initial app scaffold only. Build and source layout are defined, tests are not yet in place.
+
+## Build & Run (Local)
+
+JUCE must be available at `third_party/JUCE` (submodule recommended).
+
+```sh
+./scripts/configure.sh
+./scripts/build.sh
+./scripts/run.sh
+```
 
 ## Principles
 

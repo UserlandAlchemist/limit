@@ -2,21 +2,22 @@
 
 ## Project Structure & Module Organization
 
-This repository is currently minimal and only contains `README.md`. As the project grows, prefer a clear top-level layout such as:
+This repository is currently minimal and only contains initial scaffolding. As the project grows, prefer a clear top-level layout such as:
 
 - `src/` for JUCE app code and DSP integration
 - `tests/` for unit or integration tests
 - `assets/` for bundled presets, UI resources, or documentation artifacts
+- `third_party/JUCE/` for the JUCE source (submodule recommended)
 
 If you introduce new top-level directories, document them in `README.md` and keep names short and descriptive.
 
 ## Build, Test, and Development Commands
 
-No build or test commands are defined yet. When you add a build system (e.g., CMake, Meson, or a JUCE project generator), include canonical commands here. Examples to add later:
+Build system is CMake + Ninja. Canonical commands:
 
-- `cmake -S . -B build` (configure)
-- `cmake --build build` (build)
-- `ctest --test-dir build` (run tests)
+- `./scripts/configure.sh` (configure via CMake + Ninja)
+- `./scripts/build.sh` (build)
+- `./scripts/run.sh` (launch app)
 
 ## Coding Style & Naming Conventions
 

@@ -1,0 +1,16 @@
+/build/
+/.cache/
+/.idea/
+/.vscode/
+**/*.user
+**/*.suo
+**/*.pdb
+**/*.obj
+**/*.idb
+**/*.ipch
+**/*.ilk
+**/*.exe
+**/*.dll
+**/*.dylib
+**/*.so
+**/*.app
