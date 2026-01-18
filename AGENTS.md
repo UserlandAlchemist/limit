@@ -86,6 +86,9 @@ GUI sanitizer runs may require leak suppressions for system libraries (see `lsan
 
 When modifying C++:
 
+- After each change, run `./scripts/build.sh`, then `./scripts/lint.sh`, then
+  `ctest --test-dir build` (CI-style pass).
+- If input mappings change, update `docs/control-scheme.md` in the same change.
 - Run `./scripts/format.sh` and `./scripts/lint.sh`.
 - Run `./scripts/build.sh` and `ctest --test-dir build`.
 - If changes could introduce leaks (allocation, ownership, lifetime, containers,
