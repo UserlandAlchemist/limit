@@ -9,7 +9,7 @@ Constraint is the feature.
 
 - A JUCE-based standalone app with a minimal, controller-first UI
 - A linear, bounded musical timeline (no non-linear arranging or micro-editing)
-- A small, fixed set of internal instruments/effects authored in Faust
+- A small, fixed set of internal instruments/effects built with JUCE's DSP facilities
 - Designed around MIDI control (nanoKEY2 + MPD218) and a future Manifold keyboard
   surface
 
