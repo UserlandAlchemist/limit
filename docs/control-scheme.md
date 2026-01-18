@@ -79,7 +79,7 @@ Encoder 6: [←]    [↓]    [→]
 [↑]  = Control Bank cycle (1 → 2 → 3 → 1)
 ```
 
-### NanoKey2 Buttons
+### nanoKEY2 Buttons
 
 ```
 [F3] = Mod
@@ -108,7 +108,7 @@ Encoder 6: [←]    [↓]    [→]
 | | Encoder 4 | Ins / Home / PgUp |
 | | Encoder 5 | Del / End / PgDn |
 | | Encoder 6 | ← / ↓ / → |
-| **NanoKey2** | | |
+| **nanoKEY2** | | |
 | | Notes (white): C D E F G A B C | G H J K L ; ' \ |
 | | Notes (black): C# D# F# G# A# | Y U O P [ |
 | | Mod | F3 |
