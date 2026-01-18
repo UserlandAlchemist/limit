@@ -10,7 +10,7 @@ root_dir="$(pwd)"
 header_filter="^${root_dir}/(src|tests)/"
 
 if command -v rg >/dev/null 2>&1; then
-  rg --files -g '*.cpp' -g '*.hpp' src tests | xargs -r clang-tidy -p build -header-filter="$header_filter" --system-headers=0
+  rg --files -g '*.cpp' -g '*.hpp' src tests | xargs -r clang-tidy -p build -header-filter="$header_filter" --system-headers=0 --extra-arg=-Wno-error=unknown-warning-option
 else
-  find src tests -name '*.cpp' -o -name '*.hpp' | xargs -r clang-tidy -p build -header-filter="$header_filter" --system-headers=0
+  find src tests -name '*.cpp' -o -name '*.hpp' | xargs -r clang-tidy -p build -header-filter="$header_filter" --system-headers=0 --extra-arg=-Wno-error=unknown-warning-option
 fi

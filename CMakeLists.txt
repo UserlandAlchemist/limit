@@ -17,6 +17,10 @@ if(LIMIT_REPRODUCIBLE)
   endif()
 endif()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  add_compile_options(-Werror)
+endif()
+
 if(LIMIT_SANITIZE)
   if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(FATAL_ERROR "LIMIT_SANITIZE requires Debug build type.")
@@ -52,6 +56,7 @@ juce_generate_juce_header(Limit)
 target_sources(Limit
   PRIVATE
     src/limit-app.cpp
+    src/dev-controller.cpp
     src/keymap.cpp
 )
 
@@ -84,13 +89,15 @@ if(LIMIT_BUILD_TESTS)
   FetchContent_MakeAvailable(Catch2)
 
   enable_testing()
+  include(Catch)
 
   add_executable(limit-tests
     tests/smoke-test.cpp
+    src/dev-controller.cpp
     src/keymap.cpp
   )
   target_include_directories(limit-tests PRIVATE src)
   target_link_libraries(limit-tests PRIVATE Catch2::Catch2WithMain)
 
-  add_test(NAME limit-smoke COMMAND limit-tests)
+  catch_discover_tests(limit-tests)
 endif()
