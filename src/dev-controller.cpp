@@ -3,37 +3,11 @@
 #include <algorithm>
 
 namespace {
-struct EncoderKeyBinding {
-  char key;
-  int encoder_index;
-  int delta;
-};
-
-constexpr int kEncoderIndex0 = 0;
-constexpr int kEncoderIndex1 = 1;
-constexpr int kEncoderIndex2 = 2;
-constexpr int kEncoderIndex3 = 3;
-constexpr int kEncoderIndex4 = 4;
-constexpr int kEncoderIndex5 = 5;
-constexpr int kDeltaDown = -1;
-constexpr int kDeltaUp = 1;
 constexpr int kMidiMin = 0;
 constexpr int kMidiMax = 127;
-
-constexpr std::array<EncoderKeyBinding, 12> kEncoderKeyBindings = {{
-    {.key = '1', .encoder_index = kEncoderIndex0, .delta = kDeltaDown},
-    {.key = '2', .encoder_index = kEncoderIndex0, .delta = kDeltaUp},
-    {.key = '3', .encoder_index = kEncoderIndex1, .delta = kDeltaDown},
-    {.key = '4', .encoder_index = kEncoderIndex1, .delta = kDeltaUp},
-    {.key = '5', .encoder_index = kEncoderIndex2, .delta = kDeltaDown},
-    {.key = '6', .encoder_index = kEncoderIndex2, .delta = kDeltaUp},
-    {.key = '7', .encoder_index = kEncoderIndex3, .delta = kDeltaDown},
-    {.key = '8', .encoder_index = kEncoderIndex3, .delta = kDeltaUp},
-    {.key = '9', .encoder_index = kEncoderIndex4, .delta = kDeltaDown},
-    {.key = '0', .encoder_index = kEncoderIndex4, .delta = kDeltaUp},
-    {.key = '-', .encoder_index = kEncoderIndex5, .delta = kDeltaDown},
-    {.key = '=', .encoder_index = kEncoderIndex5, .delta = kDeltaUp},
-}};
+constexpr int kMidiCenter = 64;
+constexpr int kDeltaDown = -1;
+constexpr int kDeltaUp = 1;
 } // namespace
 
 namespace limit {
@@ -53,24 +27,26 @@ auto setDevPadBank(int bank_index, DevControllerState &state) -> bool {
   return true;
 }
 
-auto handleDevEncoderKey(int key_char, DevControllerState &state)
+auto handleDevEncoderAction(int encoder_index, DevEncoderAction action,
+                            DevControllerState &state)
     -> std::optional<DevEncoderEvent> {
-  int encoder_index = -1;
-  int delta = 0;
-  for (const auto &binding : kEncoderKeyBindings) {
-    if (binding.key == static_cast<char>(key_char)) {
-      encoder_index = binding.encoder_index;
-      delta = binding.delta;
-      break;
-    }
-  }
-  if (encoder_index < 0) {
+  if (encoder_index < 0 || encoder_index >= kDevEncoderCount) {
     return std::nullopt;
   }
 
   const auto encoder_slot = static_cast<std::size_t>(encoder_index);
   auto &value = state.encoders.at(encoder_slot);
-  value = std::clamp(value + delta, kMidiMin, kMidiMax);
+  switch (action) {
+  case DevEncoderAction::kDecrease:
+    value = std::clamp(value + kDeltaDown, kMidiMin, kMidiMax);
+    break;
+  case DevEncoderAction::kIncrease:
+    value = std::clamp(value + kDeltaUp, kMidiMin, kMidiMax);
+    break;
+  case DevEncoderAction::kReset:
+    value = kMidiCenter;
+    break;
+  }
 
   DevEncoderEvent event;
   event.bank = state.encoder_bank;

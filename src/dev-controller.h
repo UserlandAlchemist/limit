@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 #include <optional>
 
 namespace limit {
@@ -21,6 +22,8 @@ struct DevEncoderEvent {
   int cc = 0;
 };
 
+enum class DevEncoderAction : std::uint8_t { kDecrease, kReset, kIncrease };
+
 struct DevPadEvent {
   int bank = 0;
   int pad_index = 0;
@@ -28,7 +31,8 @@ struct DevPadEvent {
 
 auto setDevEncoderBank(int bank_index, DevControllerState &state) -> bool;
 auto setDevPadBank(int bank_index, DevControllerState &state) -> bool;
-auto handleDevEncoderKey(int key_char, DevControllerState &state)
+auto handleDevEncoderAction(int encoder_index, DevEncoderAction action,
+                            DevControllerState &state)
     -> std::optional<DevEncoderEvent>;
 auto handleDevPadPress(int pad_index, DevControllerState &state)
     -> std::optional<DevPadEvent>;

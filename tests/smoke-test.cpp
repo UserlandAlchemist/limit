@@ -17,19 +17,19 @@ TEST_CASE("key map", "[limit]") {
     int note;
   };
   const std::array<KeyCase, 13> cases = {{
-      {.key = 'a', .note = 60},
-      {.key = 'w', .note = 61},
-      {.key = 's', .note = 62},
-      {.key = 'e', .note = 63},
-      {.key = 'd', .note = 64},
-      {.key = 'f', .note = 65},
-      {.key = 't', .note = 66},
-      {.key = 'g', .note = 67},
-      {.key = 'y', .note = 68},
-      {.key = 'h', .note = 69},
-      {.key = 'u', .note = 70},
-      {.key = 'j', .note = 71},
-      {.key = 'k', .note = 72},
+      {.key = 'g', .note = 60},
+      {.key = 'y', .note = 61},
+      {.key = 'h', .note = 62},
+      {.key = 'u', .note = 63},
+      {.key = 'j', .note = 64},
+      {.key = 'k', .note = 65},
+      {.key = 'o', .note = 66},
+      {.key = 'l', .note = 67},
+      {.key = 'p', .note = 68},
+      {.key = ';', .note = 69},
+      {.key = '[', .note = 70},
+      {.key = '\'', .note = 71},
+      {.key = '\\', .note = 72},
   }};
 
   for (const auto &entry : cases) {
@@ -51,7 +51,7 @@ TEST_CASE("dev controller encoder mapping", "[limit]") {
   REQUIRE_FALSE(limit::setDevEncoderBank(3, state));
   REQUIRE(state.encoder_bank == 1);
 
-  auto event = limit::handleDevEncoderKey('2', state);
+  auto event = limit::handleDevEncoderAction(0, limit::DevEncoderAction::kIncrease, state);
   const auto first_event = event.value_or(limit::DevEncoderEvent{});
   REQUIRE(event.has_value());
   REQUIRE(first_event.bank == 1);
@@ -59,17 +59,17 @@ TEST_CASE("dev controller encoder mapping", "[limit]") {
   REQUIRE(first_event.value == 1);
   REQUIRE(first_event.cc == 6);
 
-  event = limit::handleDevEncoderKey('1', state);
+  event = limit::handleDevEncoderAction(0, limit::DevEncoderAction::kReset, state);
   const auto second_event = event.value_or(limit::DevEncoderEvent{});
   REQUIRE(event.has_value());
-  REQUIRE(second_event.value == 0);
+  REQUIRE(second_event.value == 64);
 
-  event = limit::handleDevEncoderKey('7', state);
+  event = limit::handleDevEncoderAction(3, limit::DevEncoderAction::kDecrease, state);
   const auto third_event = event.value_or(limit::DevEncoderEvent{});
   REQUIRE(event.has_value());
   REQUIRE(third_event.encoder_index == 3);
 
-  event = limit::handleDevEncoderKey('x', state);
+  event = limit::handleDevEncoderAction(-1, limit::DevEncoderAction::kIncrease, state);
   REQUIRE_FALSE(event.has_value());
   // NOLINTEND(cppcoreguidelines-avoid-do-while)
 }

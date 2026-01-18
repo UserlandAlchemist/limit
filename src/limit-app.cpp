@@ -1,6 +1,8 @@
 #include <JuceHeader.h>
 
+#include <algorithm>
 #include <array>
+#include <cctype>
 
 #include "dev-controller.h"
 #include "keymap.h"
@@ -53,14 +55,21 @@ public:
   void parentHierarchyChanged() override { focusIfVisible(); }
   void visibilityChanged() override { focusIfVisible(); }
   auto keyPressed(const juce::KeyPress &key) -> bool override {
-    if (handleDevEncoderBankSwitch(key) || handleDevPadBankSwitch(key) ||
-        handleDevEncoder(key) || handleDevPad(key)) {
+    if (handleDevPadBankCycle(key) || handleDevControlBankCycle(key) ||
+        handleDevUtilityButtons(key) || handleDevEncoder(key) || handleDevPad(key)) {
       return true;
     }
     const auto key_char = static_cast<unsigned char>(key.getTextCharacter());
-    const auto note = limit::mapKeyToMidiNote(static_cast<int>(key_char));
+    const auto normalized = static_cast<unsigned char>(std::tolower(key_char));
+    const auto note = limit::mapKeyToMidiNote(static_cast<int>(normalized));
     if (note >= 0) {
-      last_midi_message = "note-on " + juce::MidiMessage::getMidiNoteName(note, true, true, 3);
+      const auto octave_shift = note_octave_offset * kSemitone;
+      const auto shifted_note = note + octave_shift;
+      if (shifted_note < kMidiMin || shifted_note > kMidiMax) {
+        return false;
+      }
+      last_midi_message =
+          "note-on " + juce::MidiMessage::getMidiNoteName(shifted_note, true, true, 3);
       repaint();
       return true;
     }
@@ -74,44 +83,163 @@ private:
   static constexpr float kBodyFontSize = 14.0f;
   static constexpr int kTitleHeight = 60;
   static constexpr int kPadding = 24;
+  static constexpr int kMidiMin = 0;
+  static constexpr int kMidiMax = 127;
+  static constexpr int kSemitone = 12;
+  static constexpr int kEncoderIndex0 = 0;
+  static constexpr int kEncoderIndex1 = 1;
+  static constexpr int kEncoderIndex2 = 2;
+  static constexpr int kEncoderIndex3 = 3;
+  static constexpr int kEncoderIndex4 = 4;
+  static constexpr int kEncoderIndex5 = 5;
 
-  auto handleDevEncoderBankSwitch(const juce::KeyPress &key) -> bool {
+  auto handleDevControlBankCycle(const juce::KeyPress &key) -> bool {
     const auto key_code = key.getKeyCode();
-    if (key_code == juce::KeyPress::F1Key) {
-      limit::setDevEncoderBank(0, dev_state);
-    } else if (key_code == juce::KeyPress::F2Key) {
-      limit::setDevEncoderBank(1, dev_state);
-    } else if (key_code == juce::KeyPress::F3Key) {
-      limit::setDevEncoderBank(2, dev_state);
-    } else {
+    if (key_code != juce::KeyPress::upKey) {
       return false;
     }
-
-    last_midi_message = "dev enc bank " + juce::String(dev_state.encoder_bank + 1);
+    const auto next_bank = (dev_state.encoder_bank + 1) % limit::kDevBankCount;
+    limit::setDevEncoderBank(next_bank, dev_state);
+    last_midi_message = "dev control bank " + juce::String(dev_state.encoder_bank + 1);
     repaint();
     return true;
   }
 
-  auto handleDevPadBankSwitch(const juce::KeyPress &key) -> bool {
+  auto handleDevPadBankCycle(const juce::KeyPress &key) -> bool {
     const auto key_code = key.getKeyCode();
-    if (key_code == juce::KeyPress::F5Key) {
-      limit::setDevPadBank(0, dev_state);
+    if (key_code != juce::KeyPress::F1Key) {
+      return false;
+    }
+    const auto next_bank = (dev_state.pad_bank + 1) % limit::kDevBankCount;
+    limit::setDevPadBank(next_bank, dev_state);
+    const auto bank_label =
+        juce::String::charToString(static_cast<juce::juce_wchar>('A' + dev_state.pad_bank));
+    last_midi_message = "dev pad bank " + bank_label;
+    repaint();
+    return true;
+  }
+
+  auto handleDevUtilityButtons(const juce::KeyPress &key) -> bool {
+    const auto key_code = key.getKeyCode();
+    if (key_code == juce::KeyPress::F2Key) {
+      last_midi_message = "dev prog select";
+    } else if (key_code == juce::KeyPress::F3Key) {
+      mod_active = !mod_active;
+      last_midi_message = mod_active ? "dev mod on" : "dev mod off";
+    } else if (key_code == juce::KeyPress::F4Key) {
+      sustain_active = !sustain_active;
+      last_midi_message = sustain_active ? "dev sustain on" : "dev sustain off";
+    } else if (key_code == juce::KeyPress::F5Key) {
+      note_octave_offset = std::max(note_octave_offset - 1, minOctaveOffset());
+      last_midi_message = "dev octave " + juce::String(note_octave_offset);
     } else if (key_code == juce::KeyPress::F6Key) {
-      limit::setDevPadBank(1, dev_state);
+      note_octave_offset = std::min(note_octave_offset + 1, maxOctaveOffset());
+      last_midi_message = "dev octave " + juce::String(note_octave_offset);
     } else if (key_code == juce::KeyPress::F7Key) {
-      limit::setDevPadBank(2, dev_state);
+      pitch_offset = std::max(pitch_offset - 1, kPitchMin);
+      last_midi_message = "dev pitch " + juce::String(pitch_offset);
+    } else if (key_code == juce::KeyPress::F8Key) {
+      pitch_offset = std::min(pitch_offset + 1, kPitchMax);
+      last_midi_message = "dev pitch " + juce::String(pitch_offset);
     } else {
       return false;
     }
-
-    last_midi_message = "dev pad bank " + juce::String(dev_state.pad_bank + 1);
     repaint();
     return true;
+  }
+
+  struct EncoderKeyAction {
+    int encoder_index = 0;
+    limit::DevEncoderAction action = limit::DevEncoderAction::kReset;
+  };
+
+  auto mapKeyToEncoderAction(const juce::KeyPress &key) const
+      -> std::optional<EncoderKeyAction> {
+    using Key = juce::KeyPress;
+    const auto key_code = key.getKeyCode();
+    if (key_code == Key::numberPad7) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex0,
+                              .action = limit::DevEncoderAction::kDecrease};
+    }
+    if (key_code == Key::numberPad8) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex0,
+                              .action = limit::DevEncoderAction::kReset};
+    }
+    if (key_code == Key::numberPad9) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex0,
+                              .action = limit::DevEncoderAction::kIncrease};
+    }
+    if (key_code == Key::numberPad4) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex1,
+                              .action = limit::DevEncoderAction::kDecrease};
+    }
+    if (key_code == Key::numberPad5) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex1,
+                              .action = limit::DevEncoderAction::kReset};
+    }
+    if (key_code == Key::numberPad6) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex1,
+                              .action = limit::DevEncoderAction::kIncrease};
+    }
+    if (key_code == Key::numberPad1) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex2,
+                              .action = limit::DevEncoderAction::kDecrease};
+    }
+    if (key_code == Key::numberPad2) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex2,
+                              .action = limit::DevEncoderAction::kReset};
+    }
+    if (key_code == Key::numberPad3) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex2,
+                              .action = limit::DevEncoderAction::kIncrease};
+    }
+    if (key_code == Key::insertKey) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex3,
+                              .action = limit::DevEncoderAction::kDecrease};
+    }
+    if (key_code == Key::homeKey) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex3,
+                              .action = limit::DevEncoderAction::kReset};
+    }
+    if (key_code == Key::pageUpKey) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex3,
+                              .action = limit::DevEncoderAction::kIncrease};
+    }
+    if (key_code == Key::deleteKey) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex4,
+                              .action = limit::DevEncoderAction::kDecrease};
+    }
+    if (key_code == Key::endKey) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex4,
+                              .action = limit::DevEncoderAction::kReset};
+    }
+    if (key_code == Key::pageDownKey) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex4,
+                              .action = limit::DevEncoderAction::kIncrease};
+    }
+    if (key_code == Key::leftKey) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex5,
+                              .action = limit::DevEncoderAction::kDecrease};
+    }
+    if (key_code == Key::downKey) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex5,
+                              .action = limit::DevEncoderAction::kReset};
+    }
+    if (key_code == Key::rightKey) {
+      return EncoderKeyAction{.encoder_index = kEncoderIndex5,
+                              .action = limit::DevEncoderAction::kIncrease};
+    }
+    return std::nullopt;
   }
 
   auto handleDevEncoder(const juce::KeyPress &key) -> bool {
-    const auto key_char = static_cast<int>(static_cast<unsigned char>(key.getTextCharacter()));
-    const auto event = limit::handleDevEncoderKey(key_char, dev_state);
+    const auto action = mapKeyToEncoderAction(key);
+    if (!action) {
+      return false;
+    }
+
+    const auto event =
+        limit::handleDevEncoderAction(action->encoder_index, action->action, dev_state);
     if (!event) {
       return false;
     }
@@ -124,8 +252,8 @@ private:
   }
 
   auto handleDevPad(const juce::KeyPress &key) -> bool {
-    const auto key_code = key.getKeyCode();
-    const auto pad_index = mapKeyCodeToPadIndex(key_code);
+    const auto key_char = static_cast<unsigned char>(key.getTextCharacter());
+    const auto pad_index = mapKeyCharToPadIndex(static_cast<int>(key_char));
     if (pad_index < 0) {
       return false;
     }
@@ -141,22 +269,26 @@ private:
     return true;
   }
 
-  auto mapKeyCodeToPadIndex(int key_code) const -> int {
-    using Key = juce::KeyPress;
-    static const std::array<int, limit::kDevPadCount> kPadKeys = {
-        Key::numberPad7,       Key::numberPad8,        Key::numberPad9,
-        Key::numberPadDivide,  Key::numberPad4,        Key::numberPad5,
-        Key::numberPad6,       Key::numberPadMultiply, Key::numberPad1,
-        Key::numberPad2,       Key::numberPad3,        Key::numberPadSubtract,
-        Key::numberPad0,       Key::numberPadDecimalPoint,
-        Key::numberPadEquals,  Key::numberPadAdd};
+  auto mapKeyCharToPadIndex(int key_char) const -> int {
+    static const std::array<char, limit::kDevPadCount> kPadKeys = {
+        '1', '2', '3', '4', 'q', 'w', 'e', 'r',
+        'a', 's', 'd', 'f', 'z', 'x', 'c', 'v'};
 
+    const auto normalized = static_cast<char>(std::tolower(key_char));
     for (std::size_t index = 0; index < kPadKeys.size(); ++index) {
-      if (key_code == kPadKeys.at(index)) {
+      if (normalized == kPadKeys.at(index)) {
         return static_cast<int>(index);
       }
     }
     return -1;
+  }
+
+  auto minOctaveOffset() const -> int {
+    return (kMidiMin - limit::kKeymapMinNote) / kSemitone;
+  }
+
+  auto maxOctaveOffset() const -> int {
+    return (kMidiMax - limit::kKeymapMaxNote) / kSemitone;
   }
 
   void focusIfVisible() {
@@ -185,6 +317,12 @@ private:
 
   juce::String last_midi_message;
   limit::DevControllerState dev_state{};
+  int note_octave_offset = 0;
+  bool mod_active = false;
+  bool sustain_active = false;
+  int pitch_offset = 0;
+  static constexpr int kPitchMin = -12;
+  static constexpr int kPitchMax = 12;
 };
 
 class LimitApplication final : public juce::JUCEApplication {
