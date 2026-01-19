@@ -102,7 +102,7 @@ Local tooling needed for linting:
 - `clang-format`, `clang-tidy`
 - `mdl` (ruby gem)
 
-## OP-1 Field Influence (from the user guide)
+## OP-1 Field Influence
 
 Limit borrows the OP-1 Field’s instrument-first workflow and its deliberate bounds:
 
@@ -118,9 +118,6 @@ Limit borrows the OP-1 Field’s instrument-first workflow and its deliberate bo
 ## References
 
 - Design specification: `docs/design.md`.
-- OP-1 Field User Guide (PDF): download from Teenage Engineering. Keep a local
-  copy at `docs/references/op-1-field-user-guide.pdf` (gitignored) and remove
-  it before pushing changes.
 - Control scheme and dev keyboard emulation: `docs/control-scheme.md`.
 
 ## License
