@@ -160,6 +160,51 @@ TEST_CASE("MainComponent paints into an image") {
   // NOLINTEND(cppcoreguidelines-avoid-do-while)
 }
 
+TEST_CASE("MainComponent renders secondary status box styling") {
+  juce::ScopedJuceInitialiser_GUI gui;
+  limit::MainComponent component(false);
+  component.prepareToPlay(0, 0.0);
+  constexpr int kMidiChannel = 1;
+  constexpr int kTestNote = 60;
+  constexpr int kTestVelocity = 100;
+  component.processMidiMessageForTesting(juce::MidiMessage::noteOn(
+      kMidiChannel, kTestNote, static_cast<juce::uint8>(kTestVelocity)));
+
+  const auto &theme = limit::getUiTheme();
+  const int canvas_width = theme.window_width;
+  const int canvas_height = theme.window_height;
+  const auto layout = limit::computeUiLayout({.width = canvas_width,
+                                              .height = canvas_height,
+                                              .header_height = theme.header_height,
+                                              .visualization_ratio = theme.visualization_ratio,
+                                              .encoder_ratio = theme.encoder_ratio});
+  auto to_rect = [](const limit::LayoutRect &rect) {
+    return juce::Rectangle<int>(rect.x, rect.y, rect.width, rect.height);
+  };
+
+  auto secondary_content = to_rect(layout.secondary).reduced(theme.padding);
+  secondary_content.removeFromTop(static_cast<int>(theme.body_font_size));
+  secondary_content.removeFromTop(theme.secondary_text_gap);
+  const auto status_box = secondary_content.removeFromTop(
+      static_cast<int>(theme.body_font_size * theme.status_box_line_count));
+
+  juce::Image canvas(juce::Image::RGB, canvas_width, canvas_height, true);
+  juce::Graphics g(canvas);
+  component.paint(g);
+
+  const auto border_sample_x = status_box.getX() + (status_box.getWidth() / 2);
+  const auto border_sample_y = status_box.getY();
+  const auto fill_sample_x = status_box.getRight() - theme.status_box_padding - 1;
+  const auto fill_sample_y = status_box.getCentreY();
+
+  // NOLINTBEGIN(cppcoreguidelines-avoid-do-while)
+  REQUIRE(canvas.getPixelAt(border_sample_x, border_sample_y).getARGB() ==
+          theme.border.getARGB());
+  REQUIRE(canvas.getPixelAt(fill_sample_x, fill_sample_y).getARGB() ==
+          theme.background.getARGB());
+  // NOLINTEND(cppcoreguidelines-avoid-do-while)
+}
+
 TEST_CASE("MainComponent audio and focus helpers execute") {
   juce::ScopedJuceInitialiser_GUI gui;
   limit::MainComponent component(false);
