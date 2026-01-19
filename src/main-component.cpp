@@ -13,7 +13,7 @@ namespace limit {
 namespace {
 auto getTopazTypeface() -> juce::Typeface::Ptr {
   int size = 0;
-  auto *data = BinaryData::getNamedResource("TopazPlusNFMono-Regular.ttf", size);
+  auto *data = BinaryData::getNamedResource("TopazPlusNFMonoRegular_ttf", size);
   if (data == nullptr || size == 0) {
     return nullptr;
   }
