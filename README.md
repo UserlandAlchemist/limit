@@ -112,7 +112,8 @@ Limit borrows the OP-1 Field’s instrument-first workflow and its deliberate bo
 - Mode-driven interaction (sound, sequence, tape, mix) rather than a DAW
   timeline
 - Tape “tricks” and simple edits over deep, mouse-centric micro-editing
-- Master effects apply to the mix/output rather than being printed to tape
+- Master processing is post-tape on the output bus (send/master effects operate
+  on tape playback)
 - Automatic, always-on persistence rather than explicit save management
 
 ## References
