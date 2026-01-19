@@ -68,10 +68,10 @@ LIMIT
 
 **Usage:**
 
-- Centered in application header
 - Application icon (all sizes)
 - Splash screen
 - About dialog
+- Not used in the main UI header (header uses plain `LIMIT` text)
 
 **Variants:**
 
