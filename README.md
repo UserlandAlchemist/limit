@@ -1,5 +1,7 @@
 # Limit
 
+![Limit logo](assets/limit-logo-final-a-transparent.svg)
+
 Limit is a deliberately constrained, runs-on-the-box software music instrument.
 It is not a general-purpose DAW; it is a focused environment for capturing,
 committing, and completing musical ideas within a fixed and finite structure.
@@ -24,6 +26,13 @@ Limit explicitly avoids:
 - AI composition or generative features
 
 When the constraints are reached, the work is considered finished or handed off elsewhere.
+
+## Repository Layout
+
+- `src/`: JUCE app code and DSP integration
+- `tests/`: unit/integration tests (Catch2)
+- `assets/`: bundled presets, UI resources, and logos
+- `third_party/JUCE/`: JUCE source (submodule recommended)
 
 ## Build & Run (Local)
 
