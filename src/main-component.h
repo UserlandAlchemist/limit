@@ -67,6 +67,9 @@ private:
   static constexpr float kBodyFontSize = 14.0f;
   static constexpr int kHeaderHeight = 60;
   static constexpr int kPadding = 16;
+  static constexpr int kSecondaryTextGap = 6;
+  static constexpr int kStatusBoxPadding = 8;
+  static constexpr float kStatusBoxLineCount = 2.0f;
   static constexpr float kVisualizationRatio = 0.55f;
   static constexpr float kEncoderGridRatio = 0.3f;
   static constexpr int kMidiMin = 0;

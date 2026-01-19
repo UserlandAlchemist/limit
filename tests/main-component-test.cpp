@@ -148,8 +148,8 @@ TEST_CASE("MainComponent paints into an image") {
 
   const auto panel_color = juce::Colour(0xff242424);
   auto sample = [&](const limit::LayoutRect &rect) {
-    const auto x = rect.x + kSampleInset;
-    const auto y = rect.y + kSampleInset;
+    const auto x = rect.x + rect.width - kSampleInset;
+    const auto y = rect.y + rect.height - kSampleInset;
     return canvas.getPixelAt(x, y);
   };
 

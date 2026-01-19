@@ -85,9 +85,22 @@ void MainComponent::paint(juce::Graphics &g) {
 
   g.setColour(kColorText);
   g.setFont(juce::Font(makeTopazFontOptions(kBodyFontSize)));
+  auto secondary_content = secondary_area.reduced(kPadding);
+  g.drawText("MIDI", secondary_content.removeFromTop(static_cast<int>(kBodyFontSize)),
+             juce::Justification::topLeft);
+  secondary_content.removeFromTop(kSecondaryTextGap);
+
+  auto status_box =
+      secondary_content.removeFromTop(static_cast<int>(kBodyFontSize * kStatusBoxLineCount));
+  g.setColour(kColorBackground);
+  g.fillRect(status_box);
+  g.setColour(kColorBorder);
+  g.drawRect(status_box);
+  g.setColour(kColorText);
+
   const auto midi_text = last_midi_message.isEmpty() ? "NONE" : last_midi_message;
-  const auto midi_label = juce::String("MIDI: ") + midi_text;
-  g.drawText(midi_label, secondary_area.reduced(kPadding), juce::Justification::topLeft);
+  g.drawText(midi_text, status_box.reduced(kStatusBoxPadding),
+             juce::Justification::centredLeft);
 }
 
 void MainComponent::resized() {}
