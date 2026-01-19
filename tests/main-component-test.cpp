@@ -1,5 +1,6 @@
 #include "main-component.h"
 #include "keymap.h"
+#include "ui-layout.h"
 
 #include <array>
 
@@ -132,9 +133,32 @@ TEST_CASE("MainComponent paints into an image") {
   limit::MainComponent component(false);
   constexpr int kCanvasWidth = 720;
   constexpr int kCanvasHeight = 420;
+  constexpr int kHeaderHeight = 60;
+  constexpr float kVisualizationRatio = 0.55f;
+  constexpr float kEncoderRatio = 0.3f;
+  constexpr int kSampleInset = 5;
+  const auto layout = limit::computeUiLayout({.width = kCanvasWidth,
+                                              .height = kCanvasHeight,
+                                              .header_height = kHeaderHeight,
+                                              .visualization_ratio = kVisualizationRatio,
+                                              .encoder_ratio = kEncoderRatio});
   juce::Image canvas(juce::Image::RGB, kCanvasWidth, kCanvasHeight, true);
   juce::Graphics g(canvas);
   component.paint(g);
+
+  const auto panel_color = juce::Colour(0xff242424);
+  auto sample = [&](const limit::LayoutRect &rect) {
+    const auto x = rect.x + kSampleInset;
+    const auto y = rect.y + kSampleInset;
+    return canvas.getPixelAt(x, y);
+  };
+
+  // NOLINTBEGIN(cppcoreguidelines-avoid-do-while)
+  REQUIRE(sample(layout.header).getARGB() == panel_color.getARGB());
+  REQUIRE(sample(layout.visualization).getARGB() == panel_color.getARGB());
+  REQUIRE(sample(layout.encoder).getARGB() == panel_color.getARGB());
+  REQUIRE(sample(layout.secondary).getARGB() == panel_color.getARGB());
+  // NOLINTEND(cppcoreguidelines-avoid-do-while)
 }
 
 TEST_CASE("MainComponent audio and focus helpers execute") {
