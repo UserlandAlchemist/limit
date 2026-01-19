@@ -1,12 +1,35 @@
 #include "main-component.h"
 
 #include <algorithm>
+#include <cstddef>
 
+#include "BinaryData.h"
 #include "dev-controller.h"
 #include "keymap.h"
 #include "ui-layout.h"
 
 namespace limit {
+namespace {
+constexpr const char *kTopazFallbackName = "Topaz Plus NF Mono";
+
+auto getTopazTypeface() -> juce::Typeface::Ptr {
+  int size = 0;
+  auto *data = BinaryData::getNamedResource("TopazPlusNFMono-Regular.ttf", size);
+  if (data == nullptr || size == 0) {
+    return nullptr;
+  }
+  return juce::Typeface::createSystemTypefaceFor(data, static_cast<std::size_t>(size));
+}
+
+auto makeTopazFontOptions(float height) -> juce::FontOptions {
+  auto options = juce::FontOptions{}.withHeight(height);
+  if (auto typeface = getTopazTypeface()) {
+    return options.withTypeface(typeface);
+  }
+  return options.withName(kTopazFallbackName);
+}
+} // namespace
+
 MainComponent::MainComponent(bool enable_audio) {
   setSize(kWindowWidth, kWindowHeight);
   setWantsKeyboardFocus(true);
@@ -57,15 +80,11 @@ void MainComponent::paint(juce::Graphics &g) {
   drawPanel(g, secondary_area);
 
   g.setColour(kColorAccentBlue);
-  g.setFont(juce::Font(juce::FontOptions{}
-                           .withName(kFontName)
-                           .withHeight(kTitleFontSize)));
+  g.setFont(juce::Font(makeTopazFontOptions(kTitleFontSize)));
   g.drawText("LIMIT", header_area, juce::Justification::centred);
 
   g.setColour(kColorText);
-  g.setFont(juce::Font(juce::FontOptions{}
-                           .withName(kFontName)
-                           .withHeight(kBodyFontSize)));
+  g.setFont(juce::Font(makeTopazFontOptions(kBodyFontSize)));
   const auto midi_text = last_midi_message.isEmpty() ? "NONE" : last_midi_message;
   const auto midi_label = juce::String("MIDI: ") + midi_text;
   g.drawText(midi_label, secondary_area.reduced(kPadding), juce::Justification::topLeft);

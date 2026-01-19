@@ -71,6 +71,11 @@ juce_add_gui_app(Limit
 
 juce_generate_juce_header(Limit)
 
+juce_add_binary_data(LimitBinaryData
+  SOURCES
+    assets/fonts/TopazPlusNFMono-Regular.ttf
+)
+
 target_sources(Limit
   PRIVATE
     src/limit-app.cpp
@@ -91,6 +96,7 @@ target_link_libraries(Limit
     juce::juce_audio_utils
     juce::juce_dsp
     juce::juce_gui_extra
+    LimitBinaryData
   PRIVATE
     juce::juce_recommended_config_flags
     juce::juce_recommended_warning_flags
@@ -129,6 +135,7 @@ if(LIMIT_BUILD_TESTS)
     PRIVATE
       Catch2::Catch2WithMain
       juce::juce_audio_utils
+      LimitBinaryData
       juce::juce_recommended_config_flags
       juce::juce_recommended_warning_flags
   )
