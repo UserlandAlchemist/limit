@@ -60,18 +60,6 @@ private:
   static auto toRectangle(const limit::LayoutRect &rect) -> juce::Rectangle<int>;
   void drawPanel(juce::Graphics &g, juce::Rectangle<int> area) const;
 
-  static constexpr int kWindowWidth = 720;
-  static constexpr int kWindowHeight = 420;
-  static constexpr const char *kFontName = "Topaz Plus NF Mono";
-  static constexpr float kTitleFontSize = 24.0f;
-  static constexpr float kBodyFontSize = 14.0f;
-  static constexpr int kHeaderHeight = 60;
-  static constexpr int kPadding = 16;
-  static constexpr int kSecondaryTextGap = 6;
-  static constexpr int kStatusBoxPadding = 8;
-  static constexpr float kStatusBoxLineCount = 2.0f;
-  static constexpr float kVisualizationRatio = 0.55f;
-  static constexpr float kEncoderGridRatio = 0.3f;
   static constexpr int kMidiMin = 0;
   static constexpr int kMidiMax = 127;
   static constexpr int kSemitone = 12;
@@ -81,13 +69,6 @@ private:
   static constexpr int kEncoderIndex3 = 3;
   static constexpr int kEncoderIndex4 = 4;
   static constexpr int kEncoderIndex5 = 5;
-  static inline const juce::Colour kColorBackground{0xff202020};
-  static inline const juce::Colour kColorPanel{0xff242424};
-  static inline const juce::Colour kColorBorder{0xff303030};
-  static inline const juce::Colour kColorText{0xffe6e6e6};
-  static inline const juce::Colour kColorAccentBlue{0xff5078ff};
-  static inline const juce::Colour kColorBevelLight{0x26ffffff};
-  static inline const juce::Colour kColorBevelDark{0x66000000};
 
   juce::String last_midi_message;
   limit::DevControllerState dev_state{};

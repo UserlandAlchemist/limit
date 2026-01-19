@@ -1,6 +1,7 @@
 #include "main-component.h"
 #include "keymap.h"
 #include "ui-layout.h"
+#include "ui-theme.h"
 
 #include <array>
 
@@ -131,22 +132,20 @@ TEST_CASE("MainComponent handles dev keys and pads") {
 TEST_CASE("MainComponent paints into an image") {
   juce::ScopedJuceInitialiser_GUI gui;
   limit::MainComponent component(false);
-  constexpr int kCanvasWidth = 720;
-  constexpr int kCanvasHeight = 420;
-  constexpr int kHeaderHeight = 60;
-  constexpr float kVisualizationRatio = 0.55f;
-  constexpr float kEncoderRatio = 0.3f;
+  const auto &theme = limit::getUiTheme();
+  const int canvas_width = theme.window_width;
+  const int canvas_height = theme.window_height;
   constexpr int kSampleInset = 5;
-  const auto layout = limit::computeUiLayout({.width = kCanvasWidth,
-                                              .height = kCanvasHeight,
-                                              .header_height = kHeaderHeight,
-                                              .visualization_ratio = kVisualizationRatio,
-                                              .encoder_ratio = kEncoderRatio});
-  juce::Image canvas(juce::Image::RGB, kCanvasWidth, kCanvasHeight, true);
+  const auto layout = limit::computeUiLayout({.width = canvas_width,
+                                              .height = canvas_height,
+                                              .header_height = theme.header_height,
+                                              .visualization_ratio = theme.visualization_ratio,
+                                              .encoder_ratio = theme.encoder_ratio});
+  juce::Image canvas(juce::Image::RGB, canvas_width, canvas_height, true);
   juce::Graphics g(canvas);
   component.paint(g);
 
-  const auto panel_color = juce::Colour(0xff242424);
+  const auto panel_color = theme.panel;
   auto sample = [&](const limit::LayoutRect &rect) {
     const auto x = rect.x + rect.width - kSampleInset;
     const auto y = rect.y + rect.height - kSampleInset;

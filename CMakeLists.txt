@@ -80,6 +80,7 @@ target_sources(Limit
   PRIVATE
     src/limit-app.cpp
     src/main-component.cpp
+    src/ui-theme.cpp
     src/dev-controller.cpp
     src/keymap.cpp
     src/ui-layout.cpp
@@ -127,6 +128,7 @@ if(LIMIT_BUILD_TESTS)
     src/dev-controller.cpp
     src/keymap.cpp
     src/main-component.cpp
+    src/ui-theme.cpp
     src/ui-layout.cpp
   )
   target_include_directories(limit-tests PRIVATE src)

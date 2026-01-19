@@ -7,11 +7,10 @@
 #include "dev-controller.h"
 #include "keymap.h"
 #include "ui-layout.h"
+#include "ui-theme.h"
 
 namespace limit {
 namespace {
-constexpr const char *kTopazFallbackName = "Topaz Plus NF Mono";
-
 auto getTopazTypeface() -> juce::Typeface::Ptr {
   int size = 0;
   auto *data = BinaryData::getNamedResource("TopazPlusNFMono-Regular.ttf", size);
@@ -26,12 +25,13 @@ auto makeTopazFontOptions(float height) -> juce::FontOptions {
   if (auto typeface = getTopazTypeface()) {
     return options.withTypeface(typeface);
   }
-  return options.withName(kTopazFallbackName);
+  return options.withName(getUiTheme().font_name);
 }
 } // namespace
 
 MainComponent::MainComponent(bool enable_audio) {
-  setSize(kWindowWidth, kWindowHeight);
+  const auto &theme = getUiTheme();
+  setSize(theme.window_width, theme.window_height);
   setWantsKeyboardFocus(true);
 
   auto *device_manager = &deviceManager;
@@ -60,15 +60,16 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &buffer
 void MainComponent::releaseResources() {}
 
 void MainComponent::paint(juce::Graphics &g) {
-  g.fillAll(kColorBackground);
+  const auto &theme = getUiTheme();
+  g.fillAll(theme.background);
 
   const auto bounds = getLocalBounds();
   const auto layout = limit::computeUiLayout(
       {.width = bounds.getWidth(),
        .height = bounds.getHeight(),
-       .header_height = kHeaderHeight,
-       .visualization_ratio = kVisualizationRatio,
-       .encoder_ratio = kEncoderGridRatio});
+       .header_height = theme.header_height,
+       .visualization_ratio = theme.visualization_ratio,
+       .encoder_ratio = theme.encoder_ratio});
   const auto header_area = toRectangle(layout.header);
   const auto visualization_area = toRectangle(layout.visualization);
   const auto encoder_area = toRectangle(layout.encoder);
@@ -79,27 +80,28 @@ void MainComponent::paint(juce::Graphics &g) {
   drawPanel(g, encoder_area);
   drawPanel(g, secondary_area);
 
-  g.setColour(kColorAccentBlue);
-  g.setFont(juce::Font(makeTopazFontOptions(kTitleFontSize)));
+  g.setColour(theme.accent_blue);
+  g.setFont(juce::Font(makeTopazFontOptions(theme.title_font_size)));
   g.drawText("LIMIT", header_area, juce::Justification::centred);
 
-  g.setColour(kColorText);
-  g.setFont(juce::Font(makeTopazFontOptions(kBodyFontSize)));
-  auto secondary_content = secondary_area.reduced(kPadding);
-  g.drawText("MIDI", secondary_content.removeFromTop(static_cast<int>(kBodyFontSize)),
+  g.setColour(theme.text);
+  g.setFont(juce::Font(makeTopazFontOptions(theme.body_font_size)));
+  auto secondary_content = secondary_area.reduced(theme.padding);
+  g.drawText("MIDI", secondary_content.removeFromTop(static_cast<int>(theme.body_font_size)),
              juce::Justification::topLeft);
-  secondary_content.removeFromTop(kSecondaryTextGap);
+  secondary_content.removeFromTop(theme.secondary_text_gap);
 
   auto status_box =
-      secondary_content.removeFromTop(static_cast<int>(kBodyFontSize * kStatusBoxLineCount));
-  g.setColour(kColorBackground);
+      secondary_content.removeFromTop(static_cast<int>(theme.body_font_size *
+                                                       theme.status_box_line_count));
+  g.setColour(theme.background);
   g.fillRect(status_box);
-  g.setColour(kColorBorder);
+  g.setColour(theme.border);
   g.drawRect(status_box);
-  g.setColour(kColorText);
+  g.setColour(theme.text);
 
   const auto midi_text = last_midi_message.isEmpty() ? "NONE" : last_midi_message;
-  g.drawText(midi_text, status_box.reduced(kStatusBoxPadding),
+  g.drawText(midi_text, status_box.reduced(theme.status_box_padding),
              juce::Justification::centredLeft);
 }
 
@@ -401,16 +403,17 @@ auto MainComponent::toRectangle(const limit::LayoutRect &rect) -> juce::Rectangl
 }
 
 void MainComponent::drawPanel(juce::Graphics &g, juce::Rectangle<int> area) const {
-  g.setColour(kColorPanel);
+  const auto &theme = getUiTheme();
+  g.setColour(theme.panel);
   g.fillRect(area);
-  g.setColour(kColorBorder);
+  g.setColour(theme.border);
   g.drawRect(area);
-  g.setColour(kColorBevelLight);
+  g.setColour(theme.bevel_light);
   g.drawLine(static_cast<float>(area.getX()), static_cast<float>(area.getY()),
              static_cast<float>(area.getRight()), static_cast<float>(area.getY()));
   g.drawLine(static_cast<float>(area.getX()), static_cast<float>(area.getY()),
              static_cast<float>(area.getX()), static_cast<float>(area.getBottom()));
-  g.setColour(kColorBevelDark);
+  g.setColour(theme.bevel_dark);
   g.drawLine(static_cast<float>(area.getX()), static_cast<float>(area.getBottom()),
              static_cast<float>(area.getRight()), static_cast<float>(area.getBottom()));
   g.drawLine(static_cast<float>(area.getRight()), static_cast<float>(area.getY()),
