@@ -1,6 +1,4 @@
-# Limit
-
-![Limit logo](assets/limit-logo-final-a-transparent.svg)
+# ![Limit logo](assets/limit-logo-final-a-transparent.svg)
 
 Limit is a deliberately constrained, runs-on-the-box software music instrument.
 It is not a general-purpose DAW; it is a focused environment for capturing,
