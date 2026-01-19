@@ -5,8 +5,11 @@ project(Limit VERSION 0.1.0 LANGUAGES C CXX)
 option(LIMIT_BUILD_TESTS "Build Limit tests" ON)
 option(LIMIT_REPRODUCIBLE "Enable reproducible build flags" ON)
 option(LIMIT_SANITIZE "Enable Address/Undefined sanitizers (Debug only)" OFF)
+option(LIMIT_COVERAGE "Enable coverage flags (Debug only)" OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_compile_definitions(JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
 
 if(LIMIT_REPRODUCIBLE)
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
@@ -33,6 +36,21 @@ if(LIMIT_SANITIZE)
   endif()
 endif()
 
+if(LIMIT_COVERAGE)
+  if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(FATAL_ERROR "LIMIT_COVERAGE requires Debug build type.")
+  endif()
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    add_compile_options(-O0 -g --coverage)
+    add_link_options(--coverage)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-O0 -g -fprofile-instr-generate -fcoverage-mapping)
+    add_link_options(-fprofile-instr-generate -fcoverage-mapping)
+  else()
+    message(FATAL_ERROR "LIMIT_COVERAGE is only supported on GCC/Clang.")
+  endif()
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -56,8 +74,10 @@ juce_generate_juce_header(Limit)
 target_sources(Limit
   PRIVATE
     src/limit-app.cpp
+    src/main-component.cpp
     src/dev-controller.cpp
     src/keymap.cpp
+    src/ui-layout.cpp
 )
 
 target_compile_definitions(Limit
@@ -73,9 +93,12 @@ target_link_libraries(Limit
     juce::juce_gui_extra
   PRIVATE
     juce::juce_recommended_config_flags
-    juce::juce_recommended_lto_flags
     juce::juce_recommended_warning_flags
 )
+
+if(NOT LIMIT_COVERAGE)
+  target_link_libraries(Limit PRIVATE juce::juce_recommended_lto_flags)
+endif()
 
 target_include_directories(Limit PRIVATE src)
 
@@ -93,11 +116,22 @@ if(LIMIT_BUILD_TESTS)
 
   add_executable(limit-tests
     tests/smoke-test.cpp
+    tests/main-component-test.cpp
+    tests/ui-layout-test.cpp
     src/dev-controller.cpp
     src/keymap.cpp
+    src/main-component.cpp
+    src/ui-layout.cpp
   )
   target_include_directories(limit-tests PRIVATE src)
-  target_link_libraries(limit-tests PRIVATE Catch2::Catch2WithMain)
+  target_compile_definitions(limit-tests PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
+  target_link_libraries(limit-tests
+    PRIVATE
+      Catch2::Catch2WithMain
+      juce::juce_audio_utils
+      juce::juce_recommended_config_flags
+      juce::juce_recommended_warning_flags
+  )
 
   catch_discover_tests(limit-tests)
 endif()
